@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lne-channel-deployment
+  labels:
+    app: lne-channel
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lne-channel
+  template:
+    metadata:
+     N labels:
+        app: lne-channel
+    spec:
+      containers:
+      - name: lne-channel
+        image: nouvelle0epoch/lne-channel
+        ports:
+        - containerPort: 8082
+        env:
+        - name: MONGODB_URL
+          value: mongodb://database/lne-channel
+        env:
+        - name: NOVE_ENV
+          value: production
+        env:
+        - name: USER_SERVICE_URL
+          value: lne-user
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: lne-channel
+  name: lne-channel
+spec:
+  ports:
+  - name: "8082"
+    port: 8082
+    targetPort: 8082
+  selector:
+    app: lne-channel

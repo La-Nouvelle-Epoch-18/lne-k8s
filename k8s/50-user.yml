@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lne-user-deployment
+  labels:
+    app: lne-user
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lne-user
+  template:
+    metadata:
+      labels:
+        app: lne-user
+    spec:
+      containers:
+      - name: lne-user
+        image: nouvelle0epoch/lne-user
+        ports:
+        - containerPort: 9900
+        command: ["/app/lne-user"]
+        args: ["start", "--pg-hostname=postgres"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: lne-user
+  name: lne-user
+spec:
+  ports:
+  - name: "9900"
+    port: 8080
+    targetPort: 9900
+  selector:
+    app: lne-user
